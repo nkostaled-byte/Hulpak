@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Leaf, Menu, X, ArrowRight, MessageSquareCode } from "lucide-react";
+import logoWhite from "../assets/images/hulpak-logo-long-white.png";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -45,7 +46,7 @@ export default function Header() {
             className="flex items-center cursor-pointer group select-none"
           >
             <img 
-              src="/src/assets/images/hulpak-logo-long-white.png" 
+              src={logoWhite} 
               alt="Hulpak Logo" 
               className="h-10 w-auto object-contain hover:opacity-90 transition-opacity"
               referrerPolicy="no-referrer"

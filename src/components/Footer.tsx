@@ -1,5 +1,7 @@
 import { useState, FormEvent } from "react";
 import { Leaf, Mail, ShieldCheck, Heart, ArrowUp, Send, Check } from "lucide-react";
+import logoWhite from "../assets/images/hulpak-logo-long-white.png";
+import logoSlogan from "../assets/images/Hulpak-logo-solgan-white.png";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -31,13 +33,13 @@ export default function Footer() {
           <div className="lg:col-span-5 flex flex-col gap-4">
             <div className="flex flex-col gap-2.5 items-start">
               <img 
-                src="/src/assets/images/hulpak-logo-long-white.png" 
+                src={logoWhite} 
                 alt="Hulpak Logo" 
                 className="h-10 w-auto object-contain"
                 referrerPolicy="no-referrer"
               />
               <img 
-                src="/src/assets/images/Hulpak-logo-solgan-white.png" 
+                src={logoSlogan} 
                 alt="Hulpak Slogan Logo" 
                 className="h-4.5 w-auto object-contain"
                 referrerPolicy="no-referrer"
