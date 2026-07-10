@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { productsData } from "../data";
 import { ChevronLeft, ChevronRight, Scale, Minimize2, Check, Leaf } from "lucide-react";
+import logoWhite from "../assets/images/hulpak-logo-long-white.png";
 
 // Import Swiper styles
 import "swiper/css";
@@ -9,6 +11,9 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 export default function ProductCarousel() {
+  // Keep track of loaded and failed image states
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   return (
     <section id="products" className="py-24 bg-gradient-to-b from-[#020703] to-[#041107] text-white overflow-hidden relative">
       {/* Decorative background forest light */}
@@ -94,20 +99,31 @@ export default function ProductCarousel() {
                 <div className="bg-white/[0.02] hover:bg-white/[0.04] border border-white/10 hover:border-emerald-500/30 rounded-2xl p-5 flex flex-col justify-between h-full transition-all duration-300 group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
                   <div>
                     {/* Image / Placement Container */}
-                    <div className="relative w-full aspect-[4/3] rounded-xl bg-gradient-to-br from-emerald-950/40 to-slate-900 overflow-hidden mb-6 flex items-center justify-center border border-white/5">
-                      {product.image ? (
+                    <div className="relative w-full aspect-[4/3] rounded-xl bg-gradient-to-br from-[#0b170e] to-slate-900 overflow-hidden mb-6 flex items-center justify-center border border-white/5">
+                      {/* Shimmering Skeleton Screen */}
+                      {!loadedImages[product.id] && !failedImages[product.id] && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 animate-pulse" />
+                      )}
+
+                      {product.image && !failedImages[product.id] ? (
                         <img
                           src={product.image}
                           alt={product.name}
                           referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          onLoad={() => setLoadedImages((prev) => ({ ...prev, [product.id]: true }))}
+                          onError={() => setFailedImages((prev) => ({ ...prev, [product.id]: true }))}
+                          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                            loadedImages[product.id] ? "opacity-100" : "opacity-0"
+                          }`}
                         />
                       ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                          {/* Beautiful fallback representation */}
-                          <div className="w-16 h-10 border-2 border-dashed border-white/10 rounded-md flex items-center justify-center mb-3">
-                            <span className="text-[10px] text-gray-500 font-mono">ALU</span>
-                          </div>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-neutral-800/80">
+                          <img 
+                            src={logoWhite} 
+                            alt="Hulpak Logo" 
+                            className="h-7 object-contain mb-3 opacity-40"
+                          />
                           <span className="text-emerald-400 text-xs font-mono font-bold tracking-wider uppercase">
                             Premium Design
                           </span>

@@ -1,9 +1,14 @@
 import { recipesData } from "../data";
 import { Clock, Users, ArrowUpRight, ChefHat, Flame, Snowflake } from "lucide-react";
 import { useState } from "react";
+import logoWhite from "../assets/images/hulpak-logo-long-white.png";
 
 export default function RecipesSection() {
   const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
+
+  // Keep track of loaded and failed image states
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   return (
     <section id="recipes" className="py-24 bg-[#eef5f0] text-gray-900 relative">
@@ -35,13 +40,35 @@ export default function RecipesSection() {
             >
               <div>
                 {/* Image slot */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
-                  <img
-                    src={recipe.image}
-                    alt={recipe.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0d1410] flex items-center justify-center">
+                  {!loadedImages[recipe.id] && !failedImages[recipe.id] && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 animate-pulse" />
+                  )}
+
+                  {recipe.image && !failedImages[recipe.id] ? (
+                    <img
+                      src={recipe.image}
+                      alt={recipe.title}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      onLoad={() => setLoadedImages((prev) => ({ ...prev, [recipe.id]: true }))}
+                      onError={() => setFailedImages((prev) => ({ ...prev, [recipe.id]: true }))}
+                      className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                        loadedImages[recipe.id] ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-neutral-300">
+                      <img 
+                        src={logoWhite} 
+                        alt="Hulpak Logo" 
+                        className="h-7 object-contain mb-2 opacity-50 invert"
+                      />
+                      <span className="text-emerald-800 text-[10px] font-mono font-bold tracking-wider uppercase">
+                        Recipe Guide
+                      </span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 pointer-events-none" />
                   
                   {/* Recipe Specs */}

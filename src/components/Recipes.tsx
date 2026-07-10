@@ -3,6 +3,12 @@ import { recipesData } from "../data";
 import { Clock, Users, Flame, Utensils, Search, ChevronRight, Scale, CheckCircle2, Bookmark, Heart, FlameKindling } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
+import recipe1 from "../assets/images/cottage_pie_container_1783613381913.jpg";
+import recipe2 from "../assets/images/ham_cheese_quiche_1783613397839.jpg";
+import recipe3 from "../assets/images/Fishermans-Pie.jpg";
+import recipe4 from "../assets/images/Bobotie.jpg";
+import logoWhite from "../assets/images/hulpak-logo-long-white.png";
+
 // Enhance recipe data locally with ingredients and instructions for a rich user experience
 interface FullRecipe {
   id: string;
@@ -25,7 +31,7 @@ const detailedRecipes: FullRecipe[] = [
     description: "Hearty seasoned beef, carrots, and sweet peas under a golden, peak-textured mashed potato crust baked right in our HP-320 tray.",
     prepTime: "45 mins",
     servings: 4,
-    image: "/src/assets/images/cottage_pie_container_1783613381913.jpg",
+    image: recipe1,
     tags: ["Oven Baked", "Comfort Food", "HP-320 Tray"],
     containerCode: "HP-320",
     bakingTemp: "180°C (350°F)",
@@ -55,7 +61,7 @@ const detailedRecipes: FullRecipe[] = [
     description: "Rich savory egg custard loaded with smoked country ham, matured cheddar cheese, and fresh chives, baked crispy in our HP-220 round tray.",
     prepTime: "35 mins",
     servings: 6,
-    image: "/src/assets/images/ham_cheese_quiche_1783613397839.jpg",
+    image: recipe2,
     tags: ["Easy Prep", "Breakfast/Brunch", "HP-220 Tray"],
     containerCode: "HP-220",
     bakingTemp: "190°C (375°F)",
@@ -82,7 +88,7 @@ const detailedRecipes: FullRecipe[] = [
     description: "Succulent cubes of fresh hake, kingklip, and prawns poached in a dill-infused white sauce, crowned with cheesy mashed potatoes, baked in our HP-320 tray.",
     prepTime: "50 mins",
     servings: 4,
-    image: "/src/assets/images/Fishermans-Pie.jpg",
+    image: recipe3,
     tags: ["Seafood", "Elegant Bake", "HP-320 Tray"],
     containerCode: "HP-320",
     bakingTemp: "180°C (350°F)",
@@ -110,7 +116,7 @@ const detailedRecipes: FullRecipe[] = [
     description: "Classic spiced minced meat baked with an egg-based topping, featuring a perfect balance of savory, sweet, and tangy flavors. Baked golden and fragrant in our premium Hulpak containers.",
     prepTime: "55 mins",
     servings: 6,
-    image: "/src/assets/images/Bobotie.jpg",
+    image: recipe4,
     tags: ["Spiced Beef", "South African Classic", "Baked Perfection"],
     containerCode: "HP-320",
     bakingTemp: "180°C (350°F)",
@@ -137,6 +143,10 @@ const detailedRecipes: FullRecipe[] = [
 export default function Recipes() {
   const [activeRecipeId, setActiveRecipeId] = useState<string>("rec-4"); // Default to the newly added Bobotie
   const [portions, setPortions] = useState<number>(1); // Scaling factor multiplier
+
+  // Keep track of loaded and failed image states
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   const activeRecipe = detailedRecipes.find((r) => r.id === activeRecipeId) || detailedRecipes[0];
 
@@ -205,13 +215,27 @@ export default function Recipes() {
                 }`}
               >
                 {/* Recipe thumb */}
-                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gray-900 border border-white/5 relative">
-                  <img 
-                    src={recipe.image} 
-                    alt={recipe.title} 
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  />
+                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-[#0d1410] border border-white/5 relative flex items-center justify-center">
+                  {!loadedImages[recipe.id + "-thumb"] && !failedImages[recipe.id + "-thumb"] && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 animate-pulse" />
+                  )}
+                  {recipe.image && !failedImages[recipe.id + "-thumb"] ? (
+                    <img 
+                      src={recipe.image} 
+                      alt={recipe.title} 
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      onLoad={() => setLoadedImages((prev) => ({ ...prev, [recipe.id + "-thumb"]: true }))}
+                      onError={() => setFailedImages((prev) => ({ ...prev, [recipe.id + "-thumb"]: true }))}
+                      className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                        loadedImages[recipe.id + "-thumb"] ? "opacity-100" : "opacity-0"
+                      }`} 
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-neutral-800 flex items-center justify-center p-1 text-center">
+                      <span className="text-gray-500 text-[8px] font-mono leading-none">NO IMG</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Info summary */}
@@ -260,14 +284,35 @@ export default function Recipes() {
                 className="p-6 md:p-8 shadow-2xl relative overflow-hidden"
               >
                 {/* Main Recipe Image */}
-                <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-white/5 bg-gray-900">
-                  <img 
-                    src={activeRecipe.image} 
-                    alt={activeRecipe.title} 
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-white/5 bg-[#0d1410] flex items-center justify-center">
+                  {!loadedImages[activeRecipe.id] && !failedImages[activeRecipe.id] && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 animate-pulse" />
+                  )}
+                  {activeRecipe.image && !failedImages[activeRecipe.id] ? (
+                    <img 
+                      src={activeRecipe.image} 
+                      alt={activeRecipe.title} 
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      onLoad={() => setLoadedImages((prev) => ({ ...prev, [activeRecipe.id]: true }))}
+                      onError={() => setFailedImages((prev) => ({ ...prev, [activeRecipe.id]: true }))}
+                      className={`w-full h-full object-cover ${
+                        loadedImages[activeRecipe.id] ? "opacity-100" : "opacity-0"
+                      }`} 
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-neutral-800/80">
+                      <img 
+                        src={logoWhite} 
+                        alt="Hulpak Logo" 
+                        className="h-10 object-contain mb-3 opacity-30"
+                      />
+                      <span className="text-emerald-400 text-xs font-mono font-bold tracking-wider uppercase">
+                        Premium Spec
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
                   
                   {/* Category overlay tags */}
                   <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">

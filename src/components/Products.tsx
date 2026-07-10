@@ -2,11 +2,16 @@ import { useState } from "react";
 import { productsData } from "../data";
 import { Search, SlidersHorizontal, Leaf, ZoomIn, Info, Minimize2, Scale, Mail, Check } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import logoWhite from "../assets/images/hulpak-logo-long-white.png";
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [enquiredId, setEnquiredId] = useState<string | null>(null);
+
+  // Keep track of loaded and failed image states
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   // Categories helper based on code prefixes or names
   const getCategory = (code: string) => {
@@ -147,20 +152,32 @@ export default function Products() {
               >
                 <div>
                   {/* Image slot */}
-                  <div className="relative w-full aspect-[4/3] rounded-xl bg-gradient-to-br from-emerald-950/40 to-slate-900 overflow-hidden mb-5 flex items-center justify-center border border-white/5">
-                    {product.image ? (
+                  <div className="relative w-full aspect-[4/3] rounded-xl bg-gradient-to-br from-[#0b170e] to-slate-900 overflow-hidden mb-5 flex items-center justify-center border border-white/5">
+                    {/* Shimmering Skeleton Screen */}
+                    {!loadedImages[product.id] && !failedImages[product.id] && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 animate-pulse" />
+                    )}
+
+                    {product.image && !failedImages[product.id] ? (
                       <img
                         src={product.image}
                         alt={product.name}
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        onLoad={() => setLoadedImages((prev) => ({ ...prev, [product.id]: true }))}
+                        onError={() => setFailedImages((prev) => ({ ...prev, [product.id]: true }))}
+                        className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                          loadedImages[product.id] ? "opacity-100" : "opacity-0"
+                        }`}
                       />
                     ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                        <div className="w-16 h-10 border-2 border-dashed border-white/10 rounded-md flex items-center justify-center mb-3">
-                          <span className="text-[10px] text-gray-500 font-mono">ALU</span>
-                        </div>
-                        <span className="text-emerald-400 text-xs font-mono font-bold tracking-wider uppercase">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-neutral-800/80">
+                        <img 
+                          src={logoWhite} 
+                          alt="Hulpak Logo" 
+                          className="h-7 object-contain mb-3 opacity-40"
+                        />
+                        <span className="text-emerald-400 text-[10px] font-mono font-bold tracking-wider uppercase">
                           Premium Spec
                         </span>
                       </div>

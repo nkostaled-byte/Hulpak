@@ -38,71 +38,57 @@ export default function HeroCanvas() {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Sequence loading function
+    // Sequence loading function using Promise.all
     let loadedCount = 0;
-    const images: HTMLImageElement[] = [];
     let isCancelled = false;
 
     // Set a timeout to decide if we should use fallback
     const fallbackTimeout = setTimeout(() => {
-      if (!isPreloaded && loadedCount < 5) {
+      if (!isPreloaded && loadedCount < 10) {
         console.warn("Image sequence loading timed out. Using high-fidelity procedural canvas engine.");
         setIsUsingFallback(true);
         setIsPreloaded(true);
       }
-    }, 1500);
+    }, 4000);
 
-    // Preload the first frame and force drawing it immediately
-    const firstImg = new Image();
-    const firstIndex = 0;
-    firstImg.src = `/images/frames/hulpak-frame_${(firstIndex + 1).toString().padStart(6, '0')}.jpg`;
-    images.push(firstImg);
-
-    firstImg.onload = () => {
-      if (isCancelled) return;
-      
-      // Store reference to images immediately so render can access it
-      imagesRef.current = images;
-      
-      // Draw first frame immediately so hero isn't blank
-      render();
-
-      // Now load the rest of the frames (from frame 2 to 192) in parallel
-      for (let i = 2; i <= totalFrames; i++) {
-        if (isCancelled) return;
+    // Create array of Promises to preload all 192 frames in parallel
+    const promises = Array.from({ length: totalFrames }, (_, i) => {
+      return new Promise<HTMLImageElement>((resolve) => {
         const img = new Image();
-        const index = i - 1;
-        img.src = `/images/frames/hulpak-frame_${(index + 1).toString().padStart(6, '0')}.jpg`;
+        img.src = `/images/frames/hulpak-frame_${(i + 1).toString().padStart(6, '0')}.jpg`;
         img.onload = () => {
-          if (isCancelled) return;
-          loadedCount++;
-          // 1 preloaded frame + loadedCount
-          const totalLoaded = loadedCount + 1;
-          const progressPercent = Math.round((totalLoaded / totalFrames) * 100);
-          setLoadingProgress(progressPercent);
-
-          if (totalLoaded === totalFrames) {
-            clearTimeout(fallbackTimeout);
-            setIsPreloaded(true);
-            setIsUsingFallback(false);
+          if (!isCancelled) {
+            loadedCount++;
+            setLoadingProgress(Math.round((loadedCount / totalFrames) * 100));
           }
+          resolve(img);
         };
         img.onerror = () => {
-          if (!isUsingFallback) {
-            clearTimeout(fallbackTimeout);
-            setIsUsingFallback(true);
-            setIsPreloaded(true);
+          if (!isCancelled) {
+            loadedCount++;
+            setLoadingProgress(Math.round((loadedCount / totalFrames) * 100));
           }
+          // Resolve anyway to prevent a single failure from failing the entire Promise.all
+          resolve(img);
         };
-        images.push(img);
-      }
-    };
+      });
+    });
 
-    firstImg.onerror = () => {
-      clearTimeout(fallbackTimeout);
-      setIsUsingFallback(true);
-      setIsPreloaded(true);
-    };
+    Promise.all(promises)
+      .then((loadedImages) => {
+        if (isCancelled) return;
+        clearTimeout(fallbackTimeout);
+        imagesRef.current = loadedImages;
+        setIsPreloaded(true);
+        setIsUsingFallback(false);
+        render();
+      })
+      .catch((err) => {
+        console.error("Promise.all preloading failed, using fallback:", err);
+        clearTimeout(fallbackTimeout);
+        setIsUsingFallback(true);
+        setIsPreloaded(true);
+      });
 
     // Set up GSAP ScrollTrigger
     scrollTriggerInstance = ScrollTrigger.create({

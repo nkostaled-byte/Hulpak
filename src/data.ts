@@ -1,5 +1,18 @@
 import { Product, Recipe, WhyChooseUsItem } from "./types";
 
+import prod1 from "./assets/images/products/Packaging Photos -1.jpg";
+import prod2 from "./assets/images/products/Packaging Photos -2.jpg";
+import prod3 from "./assets/images/products/AL82P.jpg";
+import prod4 from "./assets/images/products/Packaging Photos -5.jpg";
+import prod5 from "./assets/images/products/Packaging Photos -6.jpg";
+import prod6 from "./assets/images/products/Packaging Photos -7.jpg";
+import prod7 from "./assets/images/products/Packaging Photos -8.jpg";
+import prod8 from "./assets/images/products/easter-product.jpg";
+
+import recipe1 from "./assets/images/cottage_pie_container_1783613381913.jpg";
+import recipe2 from "./assets/images/ham_cheese_quiche_1783613397839.jpg";
+import recipe3 from "./assets/images/Bobotie.jpg";
+
 export const productsData: Product[] = [
   {
     id: "prod-1",
@@ -7,7 +20,7 @@ export const productsData: Product[] = [
     code: "HP-320",
     dimensions: "201 x 109 x 49 mm",
     capacity: "750 ml",
-    image: "/src/assets/images/products/Packaging Photos -1.jpg",
+    image: prod1,
     description: "Perfect for family portion cottage pies, pastas, and baked dishes. High-rigidity construction.",
     isEcoFriendly: true
   },
@@ -17,7 +30,7 @@ export const productsData: Product[] = [
     code: "HP-220",
     dimensions: "185 x 35 mm",
     capacity: "620 ml",
-    image: "/src/assets/images/products/Packaging Photos -2.jpg",
+    image: prod2,
     description: "Excellent for quiches, tarts, and sweet pies. Designed for uniform heat conduction.",
     isEcoFriendly: true
   },
@@ -27,7 +40,7 @@ export const productsData: Product[] = [
     code: "HP-450",
     dimensions: "235 x 102 x 70 mm",
     capacity: "1100 ml",
-    image: "/src/assets/images/products/AL82P.jpg",
+    image: prod3,
     description: "Ideal for fresh bread baking, artisanal meat loaves, and visual pound cakes.",
     isEcoFriendly: true
   },
@@ -37,7 +50,7 @@ export const productsData: Product[] = [
     code: "HP-500",
     dimensions: "320 x 260 x 60 mm",
     capacity: "3500 ml",
-    image: "/src/assets/images/products/Packaging Photos -5.jpg",
+    image: prod4,
     description: "Heavy-duty large roasting container for hospitality and catering service.",
     isEcoFriendly: true
   },
@@ -47,7 +60,7 @@ export const productsData: Product[] = [
     code: "HP-110",
     dimensions: "85 x 40 mm",
     capacity: "150 ml",
-    image: "/src/assets/images/products/Packaging Photos -6.jpg",
+    image: prod5,
     description: "Miniature sizing for desserts, sauces, single cupcakes, or high-end samples.",
     isEcoFriendly: true
   },
@@ -57,7 +70,7 @@ export const productsData: Product[] = [
     code: "HP-1000",
     dimensions: "240 x 190 x 40 mm",
     capacity: "950 ml",
-    image: "/src/assets/images/products/Packaging Photos -7.jpg",
+    image: prod6,
     description: "Dual-cavity design ideal for complete meal packaging, side pairings, and deliveries.",
     isEcoFriendly: true
   },
@@ -67,7 +80,7 @@ export const productsData: Product[] = [
     code: "HP-800",
     dimensions: "325 x 176 x 65 mm",
     capacity: "2200 ml",
-    image: "/src/assets/images/products/Packaging Photos -8.jpg",
+    image: prod7,
     description: "Standard industrial catering dimensions. Superb thermal seal compatibility.",
     isEcoFriendly: true
   },
@@ -77,7 +90,7 @@ export const productsData: Product[] = [
     code: "HP-650",
     dimensions: "205 x 205 x 45 mm",
     capacity: "1400 ml",
-    image: "/src/assets/images/products/easter-product.jpg",
+    image: prod8,
     description: "Versatile medium tray for square brownies, casseroles, and freezer storage.",
     isEcoFriendly: true
   }
@@ -90,7 +103,7 @@ export const recipesData: Recipe[] = [
     description: "Hearty seasoned beef, carrots, and sweet peas under a golden, peak-textured mashed potato crust baked right in our HP-320 tray.",
     prepTime: "45 mins",
     servings: 4,
-    image: "/src/assets/images/cottage_pie_container_1783613381913.jpg",
+    image: recipe1,
     tags: ["Oven Baked", "Comfort Food", "HP-320 Tray"]
   },
   {
@@ -99,7 +112,7 @@ export const recipesData: Recipe[] = [
     description: "Rich savory egg custard loaded with smoked country ham, matured cheddar cheese, and fresh chives, baked crispy in our HP-220 round tray.",
     prepTime: "35 mins",
     servings: 6,
-    image: "/src/assets/images/ham_cheese_quiche_1783613397839.jpg",
+    image: recipe2,
     tags: ["Easy Prep", "Breakfast/Brunch", "HP-220 Tray"]
   },
   {
@@ -108,7 +121,7 @@ export const recipesData: Recipe[] = [
     description: "Classic spiced minced meat baked with an egg-based topping, featuring a perfect balance of savory, sweet, and tangy flavors. Baked golden and fragrant in our premium Hulpak containers.",
     prepTime: "55 mins",
     servings: 6,
-    image: "/src/assets/images/Bobotie.jpg",
+    image: recipe3,
     tags: ["Spiced Beef", "South African Classic", "Baked Perfection"]
   }
 ];
